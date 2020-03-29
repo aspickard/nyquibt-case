@@ -1,10 +1,11 @@
 include <roundedcube.scad>;
+include <m5-screw-mount.scad>;
 
-case_height = 1.4;
-case_width = 12;
-case_depth = 10.5;
-case_corner_radius = 0.6;
-case_thickness = .2;
+case_height = 14;
+case_width = 120;
+case_depth = 105;
+case_corner_radius = 4;
+case_thickness = 2;
 
 difference () {
     roundedcube([case_depth, case_width, case_height], true, case_corner_radius, "z");
@@ -18,3 +19,5 @@ difference () {
         );
     }
 }
+
+m5_screw_mount(case_height, true);
