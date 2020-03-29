@@ -38,32 +38,42 @@ usbc_z_translate = -(case_height / 2) + case_thickness * 2 + usbc_z_offset;
 
 // Case shell
 difference () {
-    difference () {
-        difference () {
-            // Outer case
-            roundedcube([case_width, case_depth, case_height], true, case_corner_radius, "z");
 
-            // Inner case
-            translate([0, 0, case_thickness]) {
-                roundedcube(
-                    [case_width - case_thickness, case_depth - case_thickness, case_height - case_thickness],
-                    true,
-                    case_corner_radius,
-                    "z"
-                );
-            }
-        }
-        
-        // Breakout board usb c hole
-        translate([breakout_board_x_offset + 11, breakout_board_y_offset, usbc_z_translate]) {    
-            usbc_hole();
-        }
+    // Outer case
+    roundedcube([case_width, case_depth, case_height], true, case_corner_radius, "z");
+
+    // Inner case
+    translate([0, 0, case_thickness]) {
+        roundedcube(
+            [case_width - case_thickness, case_depth - case_thickness, case_height - case_thickness],
+            true,
+            case_corner_radius,
+            "z"
+        );
     }
+    
+    // Breakout board usb c hole
+    translate([breakout_board_x_offset + 11, breakout_board_y_offset, usbc_z_translate])
+    {    
+        usbc_hole();
+    }
+
     // Split connection usb c hole
     translate([case_width / 2, 0, usbc_z_translate]) {
         usbc_hole(false);
     }
+    
+    // Proton C DFU button
+    translate([breakout_board_x_offset + 11, breakout_board_y_offset - 20, case_floor - 2]) {
+        cylinder([10, 2], true);
+    }
+    
+    // Power switch
+    translate([0, case_depth / 2, 1]) {
+        cube([17, 17, 12], true);
+    }
 }
+
 // Plate screw mounts
 translate([screw_1_x_offset, screw_1_y_offset, 0]) {
     m5_screw_mount(case_height, true);
