@@ -14,6 +14,7 @@ case_width = 120;
 case_depth = 105;
 case_corner_radius = 4;
 case_thickness = 2;
+case_floor = -case_height / 2 + 2 * 2;
 
 screw_1_x_offset = 37.4; // 75 / 2 ?
 screw_1_y_offset = 27.8; // 55.5 / 2?
@@ -98,10 +99,18 @@ translate([breakout_board_x_offset, breakout_board_y_offset - breakout_board_dep
 }
 
 // USB C split connection scew mounts
-translate([case_width / 2 - case_thickness * 2 - 1, 12.5, -case_height / 2 + 2 * 2]) {
+translate([case_width / 2 - case_thickness * 2 - 1, 12.5, case_floor]) {
     m5_screw_mount(2, true);
 }
 
-translate([case_width / 2 - case_thickness * 2 - 1, -12.5, -case_height / 2 + 2 * 2]) {
+translate([case_width / 2 - case_thickness * 2 - 1, -12.5, case_floor]) {
     m5_screw_mount(2, true);
+}
+
+// Battery mount
+translate([17, -1,  -case_height / 2 + 2 * 2]) {
+    difference () {
+        cube([55 + case_thickness, 50 + case_thickness, 4] ,true);
+        cube([55, 50, 10], true);
+    }
 }
