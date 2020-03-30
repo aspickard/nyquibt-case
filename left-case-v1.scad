@@ -13,8 +13,9 @@ case_height = 20;
 case_width = 120;
 case_depth = 105;
 case_corner_radius = 4;
-case_thickness = 2;
-case_floor = -case_height / 2 + 2 * 2;
+case_thickness = 4;
+case_wing_width = 26;
+case_floor = -case_height / 2 + case_thickness * 2;
 
 screw_1_x_offset = 37.4; // 75 / 2 ?
 screw_1_y_offset = 27.8; // 55.5 / 2?
@@ -30,7 +31,7 @@ breakout_board_width = 30;
 breakout_board_depth = 70;
 
 breakout_board_x_offset = (-case_width + breakout_board_width) / 2;
-breakout_board_y_offset = case_depth / 2 - case_thickness * 2;
+breakout_board_y_offset = case_depth / 2 - case_thickness - 1;
 breakout_board_mount_offset = -(case_height - breakout_board_height) / 2 + case_thickness;
 
 usbc_z_offset = 2;
@@ -40,7 +41,7 @@ usbc_z_translate = -(case_height / 2) + case_thickness * 2 + usbc_z_offset;
 difference () {
 
     // Outer case
-    roundedcube([case_width, case_depth, case_height], true, case_corner_radius, "z");
+    roundedcube([case_width + case_wing_width, case_depth, case_height], true, case_corner_radius, "z");
 
     // Inner case
     translate([0, 0, case_thickness]) {
@@ -53,26 +54,28 @@ difference () {
     }
     
     // Breakout board usb c hole
-    translate([breakout_board_x_offset + 11, breakout_board_y_offset, usbc_z_translate])
+    translate([breakout_board_x_offset + 11, breakout_board_y_offset, 2])
     {    
         usbc_hole();
     }
 
     // Split connection usb c hole
-    translate([case_width / 2, 0, usbc_z_translate]) {
-        usbc_hole(false);
+    translate([case_width / 2 - case_thickness - case_wing_width, breakout_board_y_offset, 2]) {
+        usbc_hole();
     }
     
     // Proton C DFU button
-    translate([breakout_board_x_offset + 11, breakout_board_y_offset - 20, case_floor - 2]) {
-        cylinder([10, 2], true);
+    translate([breakout_board_x_offset + 11, breakout_board_y_offset - 20, case_floor - 4]) {
+        cylinder(case_thickness * 2, 2, 2, true);
     }
-    
+ 
     // Power switch
-    translate([0, case_depth / 2, 1]) {
-        cube([17, 17, 12], true);
+    translate([-(case_width / 2) - case_thickness, 0, case_thickness]) {
+        cube([16, 17, case_height - case_thickness], true);
     }
 }
+
+
 
 // Plate screw mounts
 translate([screw_1_x_offset, screw_1_y_offset, 0]) {
@@ -89,38 +92,46 @@ translate([screw_3_x_offset, screw_3_y_offset, 0]) {
 
 // Breakout board screw mounts
 // Top left
-translate([breakout_board_x_offset, breakout_board_y_offset, breakout_board_mount_offset]) {
+translate([breakout_board_x_offset + 2, breakout_board_y_offset - 3, breakout_board_mount_offset]) {
     m5_screw_mount(breakout_board_height, true);
 }
 
 // Top right
-translate([breakout_board_x_offset + breakout_board_width, breakout_board_y_offset, breakout_board_mount_offset]) {
+translate([breakout_board_x_offset + breakout_board_width - 2, breakout_board_y_offset - 3, breakout_board_mount_offset]) {
     m5_screw_mount(breakout_board_height, true);
 }
 
 // Bottom right
-translate([breakout_board_x_offset + breakout_board_width, breakout_board_y_offset - breakout_board_depth, breakout_board_mount_offset]) {
+translate([breakout_board_x_offset + breakout_board_width - 2, breakout_board_y_offset - breakout_board_depth + 3, breakout_board_mount_offset]) {
     m5_screw_mount(breakout_board_height, true);
 }
 
 // Bottom left
-translate([breakout_board_x_offset, breakout_board_y_offset - breakout_board_depth, breakout_board_mount_offset]) {
+translate([breakout_board_x_offset + 2, breakout_board_y_offset - breakout_board_depth + 3, breakout_board_mount_offset]) {
     m5_screw_mount(breakout_board_height, true);
 }
 
-// USB C split connection scew mounts
-translate([case_width / 2 - case_thickness * 2 - 1, 12.5, case_floor]) {
+// USB C split connection scew mounts (25mm inner width)
+translate([
+        case_width / 2 - case_thickness - case_wing_width - 12.5,
+        case_depth / 2 - case_thickness - 2,
+        case_floor
+    ]) {
     m5_screw_mount(2, true);
 }
 
-translate([case_width / 2 - case_thickness * 2 - 1, -12.5, case_floor]) {
+translate([
+        case_width / 2 - case_thickness - case_wing_width + 12.5,
+        case_depth / 2 - case_thickness - 2,
+        case_floor
+    ]) {
     m5_screw_mount(2, true);
 }
 
 // Battery mount
 translate([17, -1,  -case_height / 2 + 2 * 2]) {
     difference () {
-        cube([55 + case_thickness, 50 + case_thickness, 4] ,true);
+        cube([55 + case_thickness / 2, 50 + case_thickness / 2, 8] ,true);
         cube([55, 50, 10], true);
     }
 }
