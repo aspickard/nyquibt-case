@@ -22,7 +22,7 @@ module switch_mount(width=switch_width) {
     cube([width, width, plate_thickness], true);
 }
 
-module m5_screw_hole(height=10, radius=2.5, center=true) {
+module m5_screw_hole(height=10, radius=1.5, center=true) {
     cylinder(height, radius, radius, center);
 }
 
