@@ -153,12 +153,20 @@ difference () {
  
     // Power switch bottom
     translate([-(case_width / 2) - case_thickness, 0, case_thickness]) {
-        cube([switch_width, switch_depth, case_height], true);
+        cube([
+            switch_width,
+            switch_depth,
+            case_height
+        ], true);
     }
     
     // Power switch top
     translate([-(case_width / 2) - case_thickness, 0, case_height]) {
-        cube([switch_width + switch_plate_width, switch_width + switch_plate_width, case_height], true);
+        cube([
+            switch_width + switch_plate_width,
+            switch_depth + switch_plate_width,
+            case_height
+        ], true);
     }
     
     // Magnet mounts       
