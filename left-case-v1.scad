@@ -168,7 +168,7 @@ translate([
         -(case_depth / 2 - case_thickness) + 10,
         case_floor
     ]) {
-    m5_screw_mount(2, true);
+    m5_screw_mount(4, true);
 }
 
 translate([
@@ -176,7 +176,7 @@ translate([
         -(case_depth / 2 - case_thickness) + 10,
         case_floor
     ]) {
-    m5_screw_mount(2, true);
+    m5_screw_mount(4, true);
 }
 
 // Battery mount
