@@ -1,12 +1,6 @@
 include <roundedcube.scad>;
 include <m5-screw-mount.scad>;
 
-module usbc_hole(vertical = true) {
-    direction = vertical ? "y" : "x";
-    
-    roundedcube([10, 10, 4], true, 2, direction);
-}
-
 // All units in mm
 
 case_height = 20;
@@ -16,6 +10,7 @@ case_corner_radius = 4;
 case_thickness = 4;
 case_wing_width = 30;
 case_floor = -case_height / 2 + case_thickness;
+case_slope = 5;
 
 screw_1_x_offset = 37.4; // 75 / 2 ?
 screw_1_y_offset = 27.8; // 55.5 / 2?
@@ -40,6 +35,21 @@ breakout_board_mount_offset = -(case_height - breakout_board_height) / 2 + case_
 usbc_z_offset = 2;
 usbc_z_translate = -(case_height / 2) + case_thickness * 2 + usbc_z_offset;
 
+magnet_radius = 5;
+magnet_height = 3;
+magnet_offset = 2;
+
+module usbc_hole(vertical=true) {
+    direction = vertical ? "y" : "x";
+    
+    roundedcube([10, 10, 4], true, 2, direction);
+}
+
+module magnet_mount(height=3, radius=5, rotation=case_slope) {
+    rotate([case_slope, 0, 0]) {
+        cylinder(height, radius, radius, true);
+    }
+}
 
 // Case shell
 difference () {
@@ -48,8 +58,9 @@ difference () {
     union() {
         roundedcube([case_width + case_wing_width, case_depth, case_height], true, case_corner_radius, "z");
             
+            // Case slope
             translate([0, 0, case_height - case_thickness * 2 - 4]) {
-                rotate([5, 0, 0]) {
+                rotate([case_slope, 0, 0]) {
                     roundedcube([case_width + case_wing_width, case_depth, case_height - case_thickness - 2], true, case_corner_radius, "z");
                 }
             }
@@ -66,7 +77,7 @@ difference () {
     }
     
     // Inner case ceiling
-    translate([0, -1, case_height]) {
+    translate([0, 0, case_height]) {
         roundedcube(
             [case_width - case_thickness + 4, case_depth - case_thickness, case_height],
             true,
@@ -76,31 +87,65 @@ difference () {
     }
     
     // Breakout board usb c hole
-    translate([breakout_board_x_offset + 12 + breakout_board_hole_x_offset, breakout_board_y_offset, 0])
+    translate([breakout_board_x_offset + 12 + breakout_board_hole_x_offset, breakout_board_y_offset, -2])
     {    
         usbc_hole();
     }
 
     // Split connection usb c hole
-    translate([case_width / 2 - case_thickness - case_wing_width, breakout_board_y_offset, 0]) {
+    translate([case_width / 2 - case_thickness - case_wing_width, breakout_board_y_offset, -2]) {
         usbc_hole();
     }
     
     // Proton C DFU button
-    translate([breakout_board_x_offset + 14, breakout_board_y_offset - 20, case_floor - 4]) {
+    translate([breakout_board_x_offset + 15, breakout_board_y_offset - 20, case_floor - 4]) {
         cylinder(case_thickness * 2, 2, 2, true);
     }
  
     // Power switch bottom
     translate([-(case_width / 2) - case_thickness, 0, case_thickness]) {
-        cube([18, 18, case_height], true);
+        cube([18, 20, case_height], true);
     }
     
     // Power switch top
     translate([-(case_width / 2) - case_thickness, 0, case_height]) {
-        cube([20, 20, case_height], true);
+        cube([20, 22, case_height], true);
+    }
+    
+    // Magnet mounts       
+    translate([
+        -(case_width / 2 + case_wing_width / 2 - magnet_radius - magnet_offset),
+        case_depth / 2 - magnet_radius - magnet_offset * 2,
+        case_height - magnet_height + 1
+    ]) {
+        magnet_mount();
+    }
+ 
+    translate([
+        case_width / 2 + case_wing_width / 2 - magnet_radius - magnet_offset,
+        case_depth / 2 - magnet_radius - magnet_offset * 2,
+        case_height - magnet_height + 1
+    ]) {
+        magnet_mount();
+    }
+
+    translate([
+        case_width / 2 + case_wing_width / 2 - magnet_radius - magnet_offset,
+        -(case_depth / 2 - magnet_radius - magnet_offset * 2),
+        10
+    ]) {
+        magnet_mount();
+    }
+    
+    translate([
+        -(case_width / 2 + case_wing_width / 2 - magnet_radius - magnet_offset),
+        -(case_depth / 2 - magnet_radius - magnet_offset * 2),
+        10
+    ]) {
+        magnet_mount();
     }
 }
+
 
 // Plate screw mounts
 translate([screw_1_x_offset, screw_1_y_offset, 0]) {
@@ -133,7 +178,7 @@ translate([
 
 // Bottom right
 translate([
-    breakout_board_x_offset + breakout_board_width - breakout_board_hole_x_offset, breakout_board_y_offset - breakout_board_depth + 2 * breakout_board_hole_y_offset,
+    breakout_board_x_offset + breakout_board_width - breakout_board_hole_x_offset, breakout_board_y_offset - breakout_board_depth,
     breakout_board_mount_offset]) {
     m5_screw_mount(breakout_board_height, true);
 }
@@ -141,7 +186,7 @@ translate([
 // Bottom left
 translate([
     breakout_board_x_offset + breakout_board_hole_x_offset,
-    breakout_board_y_offset - breakout_board_depth + 2 * breakout_board_hole_y_offset, breakout_board_mount_offset]) {
+    breakout_board_y_offset - breakout_board_depth, breakout_board_mount_offset]) {
     m5_screw_mount(breakout_board_height, true);
 }
 
