@@ -12,14 +12,23 @@ case_wing_width = 30;
 case_floor = -case_height / 2 + case_thickness;
 case_slope = 5;
 
-screw_1_x_offset = 37.4; // 75 / 2 ?
+/*screw_1_x_offset = 37.4; // 75 / 2 ?
 screw_1_y_offset = 27.8; // 55.5 / 2?
 
 screw_2_x_offset = 18.2; // 36.5 / 2?
 screw_2_y_offset = -29.4; // 59 / 2?
 
 screw_3_x_offset = -39; // 79 / 2?
-screw_3_y_offset = -29.4; // 59 / 2?
+screw_3_y_offset = -29.4; // 59 / 2?*/
+
+screw_1_x_offset = 38; // 75 / 2 ?
+screw_1_y_offset = 28.5; // 55.5 / 2?
+
+screw_2_x_offset = 18.5; // 36.5 / 2?
+screw_2_y_offset = -28.5; // 59 / 2?
+
+screw_3_x_offset = -38; // 79 / 2?
+screw_3_y_offset = -28.5; // 59 / 2?
 
 breakout_board_height = 10;
 breakout_board_width = 30;
