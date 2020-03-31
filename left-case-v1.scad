@@ -51,6 +51,10 @@ module magnet_mount(height=3, radius=5, rotation=case_slope) {
     }
 }
 
+module pad_mount(width=13, height=2) {
+    cube([width, width, height], true);
+}
+
 // Case shell
 difference () {
 
@@ -144,8 +148,40 @@ difference () {
     ]) {
         magnet_mount();
     }
+    
+    // Pad mounts
+    translate([
+        -(case_width / 2 + case_wing_width / 2 - magnet_radius - magnet_offset * 4),
+        case_depth / 2 - magnet_radius - magnet_offset * 4,
+        -(case_height / 2)
+    ]) {
+        pad_mount();
+    }
+    
+    translate([
+        -(case_width / 2 + case_wing_width / 2 - magnet_radius - magnet_offset * 4),
+        -(case_depth / 2 - magnet_radius - magnet_offset * 4),
+        -(case_height / 2)
+    ]) {
+        pad_mount();
+    }
+    
+    translate([
+        (case_width / 2 + case_wing_width / 2 - magnet_radius - magnet_offset * 4),
+        -(case_depth / 2 - magnet_radius - magnet_offset * 4),
+        -(case_height / 2)
+    ]) {
+        pad_mount();
+    }
+    
+    translate([
+        (case_width / 2 + case_wing_width / 2 - magnet_radius - magnet_offset * 4),
+        (case_depth / 2 - magnet_radius - magnet_offset * 4),
+        -(case_height / 2)
+    ]) {
+        pad_mount();
+    }
 }
-
 
 // Plate screw mounts
 translate([screw_1_x_offset, screw_1_y_offset, 0]) {
