@@ -20,7 +20,7 @@ case_floor = -case_height / 2 + case_thickness;
 // Slope of the case (for switch protection)
 case_slope = 5;
 // How much top slope should intersect with base case
-case_slope_offset = 4;
+case_slope_offset = 0;
 // How much space for plate support rims on front and sides
 case_plate_shelf_width = 2;
 
@@ -57,7 +57,7 @@ usbc_hole_width = 25;
 // Magnet size for wing magnet inserts / mounts
 magnet_radius = 5;
 magnet_height = 3;
-magnet_offset = 2;
+magnet_offset = 4;
 
 // Power switch sizes
 switch_width = 18;
@@ -88,44 +88,41 @@ module pad_mount(width=13, height=2) {
 
 // Case shell
 difference () {
+    translate([0, 0, case_height / 2]) {
+        difference () {
+        // Outer case
+        roundedcube([case_width + case_wing_width, case_depth, case_height * 2], true, case_corner_radius, "z");
 
-    // Outer case
-    union() {
-        roundedcube([case_width + case_wing_width, case_depth, case_height], true, case_corner_radius, "z");
-            
-            // Case slope TODO: why * 3 and not 2?
-            translate([0, 0, case_height - (case_thickness * 2) - case_slope_offset]) {
-                rotate([case_slope, 0, 0]) {
-                    roundedcube([case_width + case_wing_width, case_depth, case_height - case_thickness - 2], true, case_corner_radius, "z");
-                }
-            }
-    }
-
-    // Inner case
-    // Y is 1 in the translate so that back wall of inner case is flush
-    translate([0, 1, case_thickness - case_plate_shelf_width]) {
-        roundedcube([
-            case_width - case_plate_shelf_width * 2,
-            case_depth - case_plate_shelf_width * 3 , // No
-            case_height - case_thickness
-        ],
-            true,
-            case_corner_radius,
-            "z"
-        );
-    }
-    
-    // Inner case ceiling
-    translate([0, 0, case_height]) {
-        roundedcube(
-            [
-                case_width - case_thickness + case_plate_shelf_width * 2,
-                case_depth - case_thickness, case_height
+        // Inner case
+        // Y is 1 in the translate so that back wall of inner case is flush
+        translate([0, 1, case_thickness - case_plate_shelf_width]) {
+            roundedcube([
+                case_width - case_plate_shelf_width * 2,
+                case_depth - case_plate_shelf_width * 3,
+                case_height * 2 - case_thickness
             ],
-            true,
-            case_corner_radius,
-            "z"
-        );
+                true,
+                case_corner_radius,
+                "z"
+            );
+        }
+        
+        // Inner case ceiling
+        translate([0, 0, case_height + case_slope_offset - case_thickness]) {
+            rotate([case_slope, 0, 0]) {
+                roundedcube(
+                    [
+                        case_width + case_wing_width,
+                        case_depth * 2,
+                        case_height
+                    ],
+                    true,
+                    case_corner_radius,
+                    "z"
+                );
+            }
+        }
+    }
     }
     
     // Breakout board usb c hole
@@ -173,7 +170,7 @@ difference () {
     translate([
         -(case_width / 2 + case_wing_width / 2 - magnet_radius),
         case_depth / 2 - magnet_radius - magnet_offset * 3,
-        case_height - magnet_height - 2
+        case_height - magnet_height - magnet_offset + 1
     ]) {
         magnet_slot();
     }
@@ -181,23 +178,23 @@ difference () {
     translate([
         case_width / 2 + case_wing_width / 2 - magnet_radius,
         case_depth / 2 - magnet_radius - magnet_offset * 3,
-        case_height - magnet_height - 2
+        case_height - magnet_height - magnet_offset + 1
     ]) {
         magnet_slot();
     }
 
     translate([
         case_width / 2 + case_wing_width / 2 - magnet_radius,
-        -(case_depth / 2 - magnet_radius) + magnet_offset * 2,
-        8
+        -(case_depth / 2 - magnet_radius) + magnet_offset * 3,
+        magnet_offset * 2
     ]) {
         magnet_slot();
     }
     
     translate([
         -(case_width / 2 + case_wing_width / 2 - magnet_radius),
-        -(case_depth / 2 - magnet_radius) + magnet_offset * 2,
-        8
+        -(case_depth / 2 - magnet_radius) + magnet_offset * 3,
+        magnet_offset * 2
     ]) {
         magnet_slot();
     }
@@ -314,7 +311,7 @@ translate([
 }
 
 // Battery mount
-translate([17, -1,  -case_height / 2 + 2 * 2]) {
+translate([17, 0,  -case_height / 2 + 2 * 2]) {
     difference () {
         cube([55 + case_thickness / 2, 50 + case_thickness / 2, 8] ,true);
         cube([55, 50, 10], true);
